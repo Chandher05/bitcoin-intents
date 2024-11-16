@@ -1,8 +1,9 @@
-const bitcoin = require("bitcoinjs-lib");
-const ecc = require("tiny-secp256k1");
-const { ECPairFactory } = require("ecpair");
-const axios = require("axios");
-const { BIP32Factory } = require("bip32");
+import bitcoin from "bitcoinjs-lib";
+const ecc = require('tiny-secp256k1');
+import { ECPairFactory } from "ecpair";
+import axios from "axios";
+import { BIP32Factory } from "bip32";
+
 
 const ECPair = ECPairFactory(ecc);
 const bip32 = BIP32Factory(ecc);
@@ -10,7 +11,7 @@ bitcoin.initEccLib(ecc);
 
 const ESPLORA_API_BASE = "https://esplora.signet.surge.dev"; 
 
-async function sendTaprootTransaction(fromPrivateKey, toAddress, amountSats) {
+export async function sendTaprootTransaction(fromPrivateKey, toAddress, amountSats) {
   const network = bitcoin.networks.testnet;
   try {
     const keyPair = ECPair.fromWIF(fromPrivateKey, network);
@@ -96,7 +97,7 @@ function toXOnly(pubkey) {
   return pubkey.slice(1, 33);
 }
 
-function generateNewAddress(network = bitcoin.networks.testnet) {
+export function generateNewAddress(network = bitcoin.networks.testnet) {
   // Generate a new key pair
   const keyPair = ECPair.makeRandom({ network });
 
@@ -118,4 +119,4 @@ function generateNewAddress(network = bitcoin.networks.testnet) {
 
 // New route to create a Bitcoin address
 
-module.exports = { sendTaprootTransaction, generateNewAddress };
+

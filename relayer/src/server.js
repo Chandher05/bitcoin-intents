@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { contract_abi } from "./contract-abi.js";  // Note: .js extension is required for ES modules
 import { ethToBtc } from "./conversionBTCtoETH.js";
 import Client from "bitcoin-core";
+import { sendTaprootTransaction } from "./sendTransaction.js";
 dotenv.config();
 
 const FROM_ADDRESS = process.env.FROM_ADDRESS;
@@ -33,15 +34,15 @@ async function main() {
     );
 
 
-    async function resolveIntent(contractInstance, intentId) {
+    async function resolveIntent( intentId) {
         try {
             // Call the resolveIntent function with the intent ID
             const tx = await contract.resolveIntent(intentId);
 
             // Wait for the transaction to be mined
-            await tx.wait();
+            const receipt = await provider.getTransactionReceipt(tx.hash);
 
-            console.log(`Intent ${intentId} has been resolved successfully`);
+            console.log(`Intent ${intentId} has been resolved successfully, ${receipt}`);
             return true;
         } catch (error) {
             console.error('Error resolving intent:', error);
@@ -76,10 +77,10 @@ async function main() {
 
 
             // // Check if intent is pending (state === 0)
-            if (intent_state === 0) {
+            if (intent_state == 0) {
 
                 console.log(`Attempting to resolve intent ${intentId}...`);
-                const txid = await sendTaprosotTransaction(
+                const txid = await sendTaprootTransaction(
                     PRIVATE_KEY,
                     bitcoin_address,
                     SEND_AMOUNT_SATS(amountInBTC)
@@ -89,9 +90,9 @@ async function main() {
                 console.log("Transaction from bitcoin:", txid);
                 try {
                     // Resolve the intent
-                    const tx = await contract.resolveIntent(intentId);
+                    const tx = await resolveIntent(intentId);
                     console.log(`Waiting for transaction confirmation...`);
-                    await tx.wait();
+        
                     console.log(`Successfully resolved intent ${intentId}`);
                     console.log(`Transaction hash: ${tx.hash}`);
 
@@ -100,6 +101,7 @@ async function main() {
                 }
             } else {
                 console.log(`Intent ${intentId} is already resolved`);
+                
             }
         } catch (error) {
             if (error.message.includes("invalid intent id") || error.message.includes("Intent does not exist")) {
@@ -114,14 +116,16 @@ async function main() {
     // Process intents sequentially
     let intentId = 1;
     let exists = true;
-    exists = await processIntent(intentId);
-
-    // while (exists && intentId < 4) {
-    //     console.log(`\nChecking intent ${intentId}...`);
-    //     if (exists) {
-    //         intentId++;
-    //     }
-    // }
+    
+    while (exists && intentId < 10) {
+        console.log(`\nChecking intent ${intentId}...`);
+        exists = await processIntent(intentId);
+        if (exists) {
+            intentId++;
+        } else {
+            exists = false;
+        }
+    }
 
     console.log('\nFinished processing all intents');
 }
