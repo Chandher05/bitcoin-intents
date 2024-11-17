@@ -1,0 +1,56 @@
+{
+  "_format": "ethers-rs-sol-cache-3",
+  "paths": {
+    "artifacts": "out",
+    "build_infos": "out/build-info",
+    "sources": "contracts",
+    "tests": "test",
+    "scripts": "script",
+    "libraries": [
+      "lib"
+    ]
+  },
+  "files": {
+    "contracts/EscrowIntent.sol": {
+      "lastModificationDate": 1731795035332,
+      "contentHash": "41ce40119991e24ca7b92fbb31cb03e9",
+      "sourceName": "contracts/EscrowIntent.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.0",
+      "artifacts": {
+        "EscrowIntentManager": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "EscrowIntent.sol/EscrowIntentManager.json"
+        }
+      }
+    }
+  }
+}
